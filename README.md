@@ -10,11 +10,20 @@ The goal of this assigment is to extend this simple raytracer to support distrib
 
 You will implement two specific uses of distribution ray tracing:
 
-1. *Antialiasing via jittered supersampling*, described in 13.4.1.  You should implement a 4x4 grid of samples, and select a random sample from each bin.
+1. *Antialiasing from jittered supersampling*, described in 13.4.1.  You should implement a 4x4 grid of samples, and select a random sample from each bin.
 2. *Motion blur*, described in 13.4.5.  Each ray cast into the scene should have a random time in the video frame time interval associated with it, and that time should be used to compute all relevant properties of objects.
 
-You will also modify the sample code in a few other ways, to make it more general. Specifically, you will make the Camera object more general, allowing direct control over the distance of the viewing plane from the camera position (the focal length) and the horizontal and vertical size of the viewing window.  This will allow you to change the field of view in both the horizontal and vertical directions.  The distance, horizonal size and vertical size should be specified in world coordinates.
+In addition, you should modify the sample code to have a more general camera model. Specifically, extend the Camera object to give direct control over the distance of the viewing plane from the camera position (the focal length) and the horizontal and vertical size of the viewing window.  This will allow you to change the field of view in both the horizontal and vertical directions.  
 
+## Details
+
+Here are some specific details to help you get started.
+
+1. The distance, horizonal size and vertical size should be specified in world coordinates.  You should modify the Camera constructor to add new parameters:
+```js
+    constructor(public pos: Vector, lookAt: Vector, distance: number, hsize: number, vsize: number)
+```
+and update the object statue as needed.  You should 
 
 
 
@@ -23,8 +32,13 @@ http://video.online-convert.com/convert-to-mp4
 
 You will have to modify the code for the ray tracer in two ways, one for each part of the assignment.
 
-1. For antialiasing, you will have to cast multiple rays into the scene for each pixel, with their You will 
+1. For antialiasing, you will have to cast multiple rays into the scene for each pixel, with their 
+
+You will 
+
 The sample code has been extended to support creating a video from a sequence of frames, where the rendering accepts a video *length* (in seconds) and *fps* (frames per second), and uses those to compute the number of frames.  You can use these parameters
+
+
 
 1. a0.ts contains a lot of the code for this example, you should complete it.
 2. pointset.ts is mostly empty, you need to implement the main PointSet class that is used by the application in a0.ts
