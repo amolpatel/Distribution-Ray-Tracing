@@ -1,8 +1,10 @@
 # Assignment 1:  Distribution Ray Tracing 
 
-The code in this sample is a basic ray tracer, largely taken from the Typescript [samples](https://github.com/Microsoft/TypeScriptSamples) on github.com. It has been extended to show frames as they are rendering, allow the rendering resolution to be different than the canvas size, and rendering multiple frames to a video with the Whammy client-side WebM video encoder ([https://github.com/antimatter15/whammy]).
+The code in this sample is a basic ray tracer, largely taken from the Typescript [samples](https://github.com/Microsoft/TypeScriptSamples) on github.com. It has been extended to render the frames incrementally (line by line) so that the frames are displayed as they are rendering, to allow the rendering resolution to be different than the canvas size, and to render multiple frames into a video with the Whammy client-side WebM video encoder ([https://github.com/antimatter15/whammy]).
 
-The goal of this assigment is to extend this simple raytracer to support distribution ray tracing.  You should read the introduction to Chapter 13 and section 13.4 in your textbook.
+**IMPORTANT**:  the Whammy library does not work in all web browsers (e.g., we had problems with Safari and Firefox).  We recommend you use Chrome for this assignment. 
+
+The goal of this assigment is to extend this simple raytracer to support distribution ray tracing, specifically two improvements (antialiasing and motion blur) that make better looking videos.  You should read the introduction to Chapter 13 and section 13.4 in your textbook to prepare for the assignment.
 
 ## Due: Friday September 11th, 5pm
 
@@ -10,83 +12,61 @@ The goal of this assigment is to extend this simple raytracer to support distrib
 
 You will implement two specific uses of distribution ray tracing:
 
-1. *Antialiasing from jittered supersampling*, described in 13.4.1.  You should implement a 4x4 grid of samples, and select a random sample from each bin.
+1. *Antialiasing from jittered supersampling*, described in 13.4.1.  You should implement a NxN grid of sample bins, and select a random point to sample from each bin. The N*N colors should be averaged to get the final color for each pixel.
 2. *Motion blur*, described in 13.4.5.  Each ray cast into the scene should have a random time in the video frame time interval associated with it, and that time should be used to compute all relevant properties of objects.
 
-In addition, you should modify the sample code to have a more general camera model. Specifically, extend the Camera object to give direct control over the distance of the viewing plane from the camera position (the focal length) and the horizontal and vertical size of the viewing window.  This will allow you to change the field of view in both the horizontal and vertical directions.  
+In addition, you should modify the sample code to have a more general camera model, one where the parameters that define the location and size of the viewport relative to the camera are explicitly passed in, not implicit in the computation (as they are now).  
+
+Specifically, you should extend the Camera object to give direct control over the distance of the viewing plane from the camera position (the focal length) and the horizontal and vertical size of the viewing window. This will allow you to change the field of view of the camera, and change it independently in both the horizontal and vertical directions.  
+
+All of your videos should be generated at 640x480, with the same vertical field of view as in the sample code. (If you tried to use the current code to generate a non-square video, the sphere's would be distorted).
 
 ## Details
 
-Here are some specific details to help you get started.
+The sample code has been extended to support creating a video from a sequence of frames, where the render() method accepts a video *length* (in seconds) and *fps* (frames per second), and uses those to compute the number of frames to be rendered.  When you are testing your code, you should take advantage of the fact you can change the length, number of frames and number of pixels in the video. Low resolution, low frames-per-second videos can help you test parts of your code quickly, before rendering high resolution, high frame-rate movies.
 
-1. The distance, horizonal size and vertical size should be specified in world coordinates.  You should modify the Camera constructor to add new parameters:
+#### Camera
+
+The Camera object's constructor should have new parameters added for distance, horizonal size and vertical size:
 ```js
-    constructor(public pos: Vector, lookAt: Vector, distance: number, hsize: number, vsize: number)
+constructor(public pos: Vector, lookAt: Vector, distance: number, hsize: number, vsize: number)
 ```
-and update the object statue as needed.  You should 
+These values should be provided in world coordinates. You should add the necessary state to the object (whatever values you need to implement the more general camera in the ```getPoint()``` method).
 
+#### Antialiasing
 
+The changes necessary for the implementing antialiasing will all be in the ```render()``` method. You should add a ```grid: number``` parameter to ```render()``` For each pixel, you should generate ```grid * grid```  rays using jittered points within each bin, cast them into the scene and use the average of the resulting colors as the color for the pixel.  
 
-http://www.iskysoft.com/convert-webm/play-webm-quicktime.html
-http://video.online-convert.com/convert-to-mp4
+#### Motion blur
 
-You will have to modify the code for the ray tracer in two ways, one for each part of the assignment.
+To implement motion blur, you will need to update the ```intersect()``` method of the ```Thing``` class to include a ```time: number``` parameter (there are other changes you will need to make to the code, many of them to get the time value down to where ```intersect()``` is called, but this is the key change). 
 
-1. For antialiasing, you will have to cast multiple rays into the scene for each pixel, with their 
+For each ray that you shoot into the scene, you should sample a random time in the time interval corresponding to the current frame.  For example, you are generating a video that has 10 frames per second, the 1st frame covers the time interval (0, 0.1), the second (0.1, 0.2), and so on, and pass that time value to ```traceRay()```.
 
-You will 
+You will need to update the ```intersect()``` methods of the subclasses of ```Thing``` to take time into account:  the Plane object can ignore Time for this assignment.  The Sphere object should have a new method added to compute the center of the sphere at a given time: 
+```js
+getCenter(time: number): Vector 
+```
+The current Sphere will just return the center vector. You should implement a new ```Sphere``` called ```MovingSphere``` that overrides the ```getCenter()``` method to compute the center of a moving sphere.
 
-The sample code has been extended to support creating a video from a sequence of frames, where the rendering accepts a video *length* (in seconds) and *fps* (frames per second), and uses those to compute the number of frames.  You can use these parameters
+You should call this method to determine the center of the Sphere whenever it is needed.  
 
+**IMPORTANT**:  the sample program has code to move the sphere embedded in the render() method. When you create the MovingSphere, you should move all of this code into the ```computeCenter``` method, and remove it from render.  
 
+## Submission
 
-1. a0.ts contains a lot of the code for this example, you should complete it.
-2. pointset.ts is mostly empty, you need to implement the main PointSet class that is used by the application in a0.ts
-3. PointSet should be implemented as a circular buffer, as described in the comments in the file.  The key feature of a circular buffer is that the contents of the buffer are never moved or copied as new elements are added or removed.  Instead, the index markers for the start and end are updated.  The interface methods of the class hide the implementation details from the programmer: they can simply request the first, second, third, etc. element as desired.
-4. the program should create one "point" per animationFrame and store 30 points (1 second worth of data at 30 frames per second).  The points should be rendered such that they appear to fade out as the mouse moves.  New points should not be created when the mouse is outside of the canvas, but old ones should continue to disappear.
-5. when the user clicks and drags, a grey hollow rectagle should be traced out from the start point to the current mouse location.  If the user releases the button, a rectangle of random color should be created.  If the user moves the mouse out of the canvas, the rectangle creation should be canceled.
-6. the canvas should be redrawn each animation frame, and nothing should be drawn in the canvas outside of the render function.
+You will submit your code in a clean zip file, as in the first assignment
 
-Your grade will be based on satisfying each of these requirements.
+You will also submit three movies.  The movies should be 640x480 resolution, 2 seconds long, with a frame rate of 10 fps.
 
-# Submission
+Each movie should be an MP4 file, so it is easy for the TAs to view.  You should download the .webm movie (be sure to name it with the .webm suffix) and convert to an .mp4 of the same resolution.  We had success using software from iSkySoft ([http://www.iskysoft.com/convert-webm/play-webm-quicktime.html]), and using the web service at [[http://video.online-convert.com/convert-to-mp4].  Please make sure to create a file of the same size and framerate as your .webm movie.
 
-You should submit a clean project folder in a zip file to t-square.  That means should clean the folder before submission.  We suggest the following:
+Your grade will be based on satisfying the requirement described above.  
 
-1. copy the folder to a new location 
-2. delete the ".git", "js" and "node_modules" directories
-3. delete ".gitignore"
-
-You should have a0.html, a0.css, a0.ts, pointset.ts, README.md, tsconfig.json, package.json, gulpfile.js remaining (of the files in the sampel: you may have other files if you create them).
-
-**Do Not Change the names** of a0.html and a0.ts.  The TAs need to be able to test your program as follows:
+**Do Not Change the names** of raytracer.html and raytracer.ts.  The TAs need to be able to test your program as follows:
 
 1. cd into the directory and run ```npm install```
 2. compile with ```tsc```
-3. open and view the web page ```a0.html```
+3. open and view the web page ```raytracer.html```
 
-Please test that your submission meets these requirements.  For example, once you create your zip file, extract it into a new folder and test these steps.
- 
-# Development Environment
-
-The sample has already been set up with a complete project for Typescript development.
-
-To work with this sample and prepare your submission, you should have Node (and in particular, npm) installed, which you can retrieve from [nodejs.org](http://nodejs.org).   
-
-In addition to node, you should make sure Typescript is installed, as described at [www.typescriptlang.org](http://www.typescriptlang.org).
-
-## Running 
-
-You can compile the typescript to javascript and then open the html file in your web browser to run:
-```
-tsc
-open a0.html   // on a mac
-```
-
-The project also includes a simple gulpfile.js to run a simple gulp-connect web server to serve up the files in this directory.  To use it, you must install all the required npm packages, and then run gulp to build the project and run the server:
-```
-npm install
-gulp
-```
-
-You can run the sample by pointing your web browser at ```http://localhost:8080/a0.html```
+The TAs will need to change the parameters you pass to the ```render()``` function and generate images to test various aspects of your code, especially that the generalized Camera model works correctly.
