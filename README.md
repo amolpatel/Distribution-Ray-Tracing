@@ -1,6 +1,6 @@
 # Assignment 1:  Distribution Ray Tracing 
 
-The code in this sample is a basic ray tracer, largely taken from the Typescript [samples](https://github.com/Microsoft/TypeScriptSamples) on github.com. It has been extended to render the frames incrementally (line by line) so that the frames are displayed as they are rendering, to allow the rendering resolution to be different than the canvas size, and to render multiple frames into a video with the Whammy client-side WebM video encoder ([https://github.com/antimatter15/whammy]).
+The code in this sample is a basic ray tracer, largely taken from the Typescript [samples](https://github.com/Microsoft/TypeScriptSamples) on github.com. It has been extended to render the frames incrementally (line by line) so that the frames are displayed as they are rendering, to allow the rendering resolution to be different than the canvas size, and to render multiple frames into a video with the Whammy client-side WebM video encoder (https://github.com/antimatter15/whammy).
 
 **IMPORTANT**:  the Whammy library does not work in all web browsers (e.g., we had problems with Safari and Firefox).  We recommend you use Chrome for this assignment. 
 
@@ -59,7 +59,7 @@ You will submit your code in a clean zip file, as in the first assignment
 
 You will also submit three movies.  The movies should be 640x480 resolution, 2 seconds long, with a frame rate of 10 fps.
 
-Each movie should be an MP4 file, so it is easy for the TAs to view.  You should download the .webm movie (be sure to name it with the .webm suffix) and convert to an .mp4 of the same resolution.  We had success using software from iSkySoft ([http://www.iskysoft.com/convert-webm/play-webm-quicktime.html]), and using the web service at [[http://video.online-convert.com/convert-to-mp4].  Please make sure to create a file of the same size and framerate as your .webm movie.
+Each movie should be an MP4 file, so it is easy for the TAs to view.  You should download the .webm movie (be sure to name it with the .webm suffix) and convert to an .mp4 of the same resolution.  We had success using software from iSkySoft (http://www.iskysoft.com/convert-webm/play-webm-quicktime.html), and using the web service at http://video.online-convert.com/convert-to-mp4.  Please make sure to create a file of the same size and framerate as your .webm movie.
 
 Your grade will be based on satisfying the requirement described above.  
 
