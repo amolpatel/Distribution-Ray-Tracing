@@ -66,7 +66,7 @@ You will also submit four movies.  The movies should be 640x480 resolution, 2 se
 3. The same movie as 2., with the addition of motion blur.
 4. Change the scene in some non-trivial ways (e.g., at least change change the light color and positions, and the positions and attributes of the objects in the scene).  You are free to add new kinds of motions, or make other changes that interest you, but that is not required.
 
-Each movie should be an MP4 file, so it is easy for the TAs to view.  You should download the .webm movie (be sure to name it with the .webm suffix) and convert to an .mp4 of the same resolution.  We had success using software from iSkySoft (http://www.iskysoft.com/convert-webm/play-webm-quicktime.html), and using the web service at http://video.online-convert.com/convert-to-mp4.  Please make sure to create a file of the same size and framerate as your .webm movie.
+Each movie should be an MP4 file, so it is easy for the TAs to view.  You should download the .webm movie (be sure to name it with the .webm suffix) and convert to an .mp4 of the same resolution.  We had success and using the web service at http://video.online-convert.com/convert-to-mp4. (There are also software packages you can download for different platforms.) Please make sure to create a file of the same size and framerate as your .webm movie.
 
 **Do Not Change the names** of raytracer.html and raytracer.ts.  The TAs need to be able to test your program as follows:
 
