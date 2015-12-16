@@ -8,7 +8,6 @@ The code included in the assignment is a basic ray tracer, largely taken from th
 
 The goal of this assigment is to extend this simple raytracer to support distribution ray tracing, specifically two improvements (antialiasing and motion blur) that make better looking videos.  You should read the introduction to Chapter 13 and section 13.4 in your textbook to prepare for the assignment.
 
-## Due: Friday September 11th, 5pm
 
 ## Overview 
 
